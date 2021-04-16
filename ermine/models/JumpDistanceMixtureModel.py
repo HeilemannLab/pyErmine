@@ -19,7 +19,8 @@ class JumpDistanceMixtureModel:
         self._logLikelihood = 0
         
     def diffusion_coefficients(self):
-        return(self._mu/(self._degrees_of_freedom * self._tau))
+        diff_coeff = self._mu/(self._degrees_of_freedom * self._tau)
+        return(np.expand_dims(diff_coeff, axis=1))
         
     def pdf(self, x, mu):
         "Probability of a data point given the current parameters"
@@ -96,7 +97,7 @@ class JumpDistanceMixtureModel:
                       "AICc": [aicc]}
         return(dictionary)
     
-    def simulate(self, n):
+    def sample(self, n):
         judi = JumpDistanceModel(diffusion_coefficient = self.diffusion_coefficients()[0],
                                  degrees_of_freedom = self._degrees_of_freedom,
                                  tau = self._tau)

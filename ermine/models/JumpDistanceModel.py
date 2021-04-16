@@ -31,7 +31,7 @@ class JumpDistanceModel:
     def likelihood(self, distance):
         return(self.pdf(distance))
     
-    def simulate(self, n=1):
+    def sample(self, n=1):
         u = np.random.uniform(low=0.0, high=1.0, size=n)
         x = self.cdf_inverse(u)
         return(x)
