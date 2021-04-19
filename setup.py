@@ -8,6 +8,7 @@ Created on Mon Apr  5 18:20:11 2021
 from setuptools import setup, find_packages
 
 setup(name='ermine',
+      python_requires='>=3.5',
       version='0.1',
       description='Estimate Reaction-rates by Markov-based Investigation of Nanoscopy Experiments (ermine) using Python.',
       url='https://github.com/SMLMS/pyErmine',
@@ -16,7 +17,10 @@ setup(name='ermine',
       license='GNU General Public License v3 (GPLv3)',
       packages = find_packages(),
       zip_safe=False,
-      install_requires=['hmmlearn', 'matplotlib', 'numpy', 'pandas', 'scipy', 'sklearn'],
+      install_requires=['hmmlearn>=0.2.4',
+                        'numpy>=1.19.2',
+                        'pandas>=1.1.5',
+                        'sklearn>=0.23.2'],
       keywords=['hidden markov models', 'unsupervised learning', 'single particle diffucion', "biophysics"],
       classifiers= [
             "Intended Audience :: Science/Research",

@@ -8,10 +8,11 @@ Created on Mon Apr  5 17:50:44 2021
 import numpy as np
 import pandas as pd
 
-def preprocess_swift_data(data_df):
-    departure_df = data_df.sort_values(by = ["track.id", "frame"], ignore_index=True).copy()
+def preprocess_swift_data(data_df, min_track_length = 4):
+    filtered_df = data_df[data_df["track.lifetime"] >= min_track_length].copy()
+    departure_df = filtered_df.sort_values(by = ["track.id", "frame"], ignore_index=True).copy()
     destination_df = departure_df.drop(0)
-    attribute_names = data_df.columns
+    attribute_names = filtered_df.columns
     final_row = pd.Series(data = np.repeat(np.nan, np.shape(attribute_names)[0]),
                           index = attribute_names)
     destination_df = destination_df.append(final_row, ignore_index=True)
