@@ -20,7 +20,7 @@ setup(name='ermine',
       install_requires=['hmmlearn>=0.2.4',
                         'numpy>=1.19.2',
                         'pandas>=1.1.5',
-                        'sklearn>=0.23.2'],
+                        'scikit-learn>=0.23.2'],
       keywords=['hidden markov models', 'unsupervised learning', 'single particle diffucion', "biophysics"],
       classifiers= [
             "Intended Audience :: Science/Research",
