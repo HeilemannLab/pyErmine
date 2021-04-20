@@ -9,6 +9,40 @@ import numpy as np
 import pandas as pd
 
 def preprocess_swift_data(data_df, min_track_length = 4):
+    """ Creates a data frame of single molecule jumps
+    
+    The passed in data frame `data_df` is a swift data frame. Here, each line
+    represents a single molecule location at a distinct time point.
+    Each molecule location in data_df is a departure location of a possible
+    molecule jump. For each departure location the respective destination
+    location of the same molecule is searched for in the adjacent frame. If
+    the respective destnation location is identified, the departure
+    and destination location information will define a molecule jump. The
+    feature 'jump_distance' characterizes the width of the jump calculated by
+    the Euclidean distance between the two localizations. The function returns
+    the data frame `jump_df`.
+    Essential features of `data_df` are:
+        `track.lifetime`
+        `track.id`
+        `frame`
+        `x [nm]`
+        `y [nm]`
+        
+    
+
+    Parameters
+    ----------
+    data_df : pandas.core.frame.DataFrame
+        A single molecule location data frame created by Swift.
+    min_track_length : int, optional
+        minimal track length. The default is 4.
+
+    Returns
+    -------
+    jump_df: pandas.core.frame.DataFrame
+        A single molecule jump data frame.
+
+    """
     filtered_df = data_df[data_df["track.lifetime"] >= min_track_length].copy()
     departure_df = filtered_df.sort_values(by = ["track.id", "frame"], ignore_index=True).copy()
     destination_df = departure_df.drop(0)

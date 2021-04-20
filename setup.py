@@ -9,7 +9,7 @@ from setuptools import setup, find_packages
 
 setup(name='ermine',
       python_requires='>=3.5',
-      version='0.1',
+      version='0.1.1',
       description='Estimate Reaction-rates by Markov-based Investigation of Nanoscopy Experiments (ermine) using Python.',
       url='https://github.com/SMLMS/pyErmine',
       author='Sebastian Malkusch',

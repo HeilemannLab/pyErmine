@@ -9,6 +9,19 @@ import numpy as np
 import pandas as pd
 
 def create_observation_sequence(judi_df):
+    """
+    
+
+    Parameters
+    ----------
+    judi_df : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
     unique_track_id_vec = np.unique(judi_df["track.id_departure"].values)
     track_number = np.shape(unique_track_id_vec)[0]
     lengths = []
