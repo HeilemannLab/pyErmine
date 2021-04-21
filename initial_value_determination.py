@@ -12,18 +12,18 @@ from matplotlib import pyplot as plt
 
 from ermine.preprocessing.preprocess_swift_data import preprocess_swift_data
 from ermine.models.JumpDistanceMixtureModel import JumpDistanceMixtureModel
-
+    
 
 def likelihood_ratio(llmin, llmax):
     return(2*(llmax - llmin))
     
 def main():
-    file_name = "/Users/malkusch/Documents/Biophysik/ermine/raw_data/inlb/cs4/InlB_CS4_cell01.tracked.csv"
+    file_name = "/Users/malkusch/Documents/Biophysik/ermine/raw_data/inlb/cs4/InlB_CS4_cell16.tracked.csv"
     data_df = pd.read_csv(filepath_or_buffer = file_name)
     jump_df = preprocess_swift_data(data_df)
     x = jump_df["jump_distance"].values
     
-    np.random.seed(47)
+    np.random.seed(42)
     jmm = JumpDistanceMixtureModel(n_components=1)
     jmm.fit(x)
     model_df = pd.DataFrame(jmm.evaluate(x))

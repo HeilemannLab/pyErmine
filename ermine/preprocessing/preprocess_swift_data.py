@@ -52,6 +52,7 @@ def preprocess_swift_data(data_df, min_track_length = 4):
     destination_df = destination_df.append(final_row, ignore_index=True)
     jump_df = departure_df.join(destination_df, on=None, how="left", lsuffix="_departure", rsuffix="_destination")
     jump_df["jump_distance"] = np.sqrt(np.square(jump_df["x [nm]_destination"] - jump_df["x [nm]_departure"]) + np.square(jump_df["y [nm]_destination"] - jump_df["y [nm]_departure"]))
+    jump_df["jump_distance"] += np.finfo(np.float32).eps
     trackId_mismatch_idx = jump_df["track.id_departure"] != jump_df["track.id_destination"]
     frame_mismatch_idx = (jump_df["frame_destination"] - jump_df["frame_departure"]) != 1
     jump_df.loc[trackId_mismatch_idx, "jump_distance"] = np.nan
