@@ -10,13 +10,15 @@ from .JumpDistanceModel import JumpDistanceModel
 
 class JumpDistanceMixtureModel:
     "Model mixture of multiple univariate Jump-Distance (judi) distributions and their EM estimation"
-    def __init__ (self, n_components = 2, degrees_of_freedom = 4, tau=0.02):
+    def __init__ (self, n_components = 2, degrees_of_freedom = 4, tau=0.02, init_params = "wm", params="wm"):
         self._n_components = n_components
         self._degrees_of_freedom = degrees_of_freedom
         self._tau = tau
         self._mu = np.zeros(([self._n_components]))
         self._weights = np.zeros(([self._n_components]))
         self._logLikelihood = 0
+        self._init_params = str(init_params)
+        self._params = str(params)
         
     def diffusion_coefficients(self):
         diff_coeff = self._mu/(self._degrees_of_freedom * self._tau)
@@ -36,9 +38,11 @@ class JumpDistanceMixtureModel:
     def _init_step(self, x):
         mu_min = min(x)
         mu_max = max(x)
-        u = np.sort(np.random.uniform(low=mu_min, high=mu_max, size=self._n_components))
-        self._mu = np.square(u)
-        self._weights = np.repeat(1/self._n_components, self._n_components)
+        if 'm' in self._init_params:
+            u = np.sort(np.random.uniform(low=mu_min, high=mu_max, size=self._n_components))
+            self._mu = np.square(u)
+        if 'w' in self._init_params:
+            self._weights = np.repeat(1/self._n_components, self._n_components)
     
     def _e_step(self, x):
         probability = np.zeros([np.shape(x)[0], self._n_components])
@@ -53,9 +57,11 @@ class JumpDistanceMixtureModel:
     def _m_step(self, x):
         for i in range(self._n_components):
             denominator = np.sum(self._normalized_probability_[:,i])
-            self._mu[i] = np.sum(self._normalized_probability_[:,i] * np.square(x[:]))/denominator
-            self._weights[i] = denominator / np.shape(x)[0]
-        self._weights = self._weights[:] /np.sum(self._weights)
+            if 'm' in self._params:
+                self._mu[i] = np.sum(self._normalized_probability_[:,i] * np.square(x[:]))/denominator
+            if 'w' in self._params:
+                self._weights[i] = denominator / np.shape(x)[0]
+                self._weights = self._weights[:] /np.sum(self._weights)
         
     def fit(self, x, n_iter = 1000, tolerance =  1e-9):
         self._init_step(x)
