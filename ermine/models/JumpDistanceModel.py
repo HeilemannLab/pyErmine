@@ -6,24 +6,24 @@ Created on Mon Apr  5 18:00:53 2021
 @author: malkusch
 """
 import numpy as np
-
+from numpy.typing import ArrayLike
 
 class JumpDistanceModel:
     """
     Univariate Jump-Distance (judi) model
 
-    ...
+
 
     Attributes
     ----------
     _diffusion_coefficient : float
-        DESCRIPTION. The default is 1.0
+        Diffusion coefficient of the mobility state. The default is 1.0
     _degrees_of_freedom : int
-        DESCRIPTION. The default is 4
+        The translational degrees of freedom of particle motion. The default is 4
     _tau: float
-        DESCRIPTION. The default is 0.02
+        The time interval between two consecutive measurements of particle localization. The default is 0.02
     _mu: float
-        Expected value (mean squared displacement).
+        Expected value of the mean squared displacement for the given diffusion coefficient.
 
     Methods
     -------
@@ -39,18 +39,18 @@ class JumpDistanceModel:
         Performs a Monte Carlo sampling of the model.
     """
 
-    def __init__(self, diffusion_coefficient = 1.0, degrees_of_freedom = 4, tau=0.02):
+    def __init__(self, diffusion_coefficient: float = 1.0, degrees_of_freedom: int = 4, tau: float = 0.02):
         """
-        
+        Constructor of the JumpDistanceModel class.
 
         Parameters
         ----------
-        diffusion_coefficient : TYPE, optional
-            DESCRIPTION. The default is 1.0.
-        degrees_of_freedom : TYPE, optional
-            DESCRIPTION. The default is 4.
-        tau : TYPE, optional
-            DESCRIPTION. The default is 0.02.
+        diffusion_coefficient : float, optional
+            Diffusion coefficient of the mobility state. The default is 1.0.
+        degrees_of_freedom : int, optional
+            The translational degrees of freedom of particle motion. The default is 4.
+        tau : float, optional
+            The time interval between two consecutive measurements of particle localization. The default is 0.02.
 
         Returns
         -------
@@ -62,85 +62,90 @@ class JumpDistanceModel:
         self._tau = tau
         self._mu = self._degrees_of_freedom * self._diffusion_coefficient * self._tau 
     
-    def pdf(self, distance):
+    def pdf(self, distance: ArrayLike) -> ArrayLike:
         """
-        
+        Probability density function for observed jump distances.
 
         Parameters
         ----------
-        distance : TYPE
-            DESCRIPTION.
+        distance : ArrayLike
+            Observed jump distances.
 
         Returns
         -------
-        None.
+        ArrayLike
+            Probability to observe the given jump distances.
 
         """
         p = ((2 * distance)/self._mu) * np.exp((-np.square(distance))/self._mu)
         return(p)
 
-    def cdf(self, distance):
+    def cdf(self, distance: ArrayLike) -> ArrayLike:
         """
-        
+        Cumulative density function for observed jump distances.
 
         Parameters
         ----------
-        distance : TYPE
-            DESCRIPTION.
+        distance : ArrayLike
+            Observed jump distances.
 
         Returns
         -------
-        None.
+        ArrayLike
+            Cumulative probability to observe the given jump distances.
 
         """
         p = 1.0-np.exp((-np.square(distance))/self._mu)
         return(p)
     
-    def cdf_inverse(self, u):
+    def cdf_inverse(self, u: ArrayLike) -> ArrayLike:
         """
-        
+        Inverse of the cumulative density function for observed jump distances.
 
         Parameters
         ----------
-        u : TYPE
-            DESCRIPTION.
+        u : ArrayLike
+            Cumulative probability to observe the given jump distances.
 
         Returns
         -------
-        None.
+        ArrayLike
+            Jump distance associated with the given cumulative probability.
 
         """
         x = np.sqrt(-1.0 * self._mu * np.log(1.0-u))
         return(x)
     
-    def likelihood(self, distance):
+    def likelihood(self, distance: ArrayLike) -> ArrayLike:
         """
-        
+        Calculates the likelihood for an observed jump distance.
 
         Parameters
         ----------
-        distance : TYPE
-            DESCRIPTION.
+        distance : ArrayLike
+            Observed jump distances.
 
         Returns
         -------
-        None.
+        ArrayLike
+            likelihood for an observed jump distance.
 
         """
         return(self.pdf(distance))
     
-    def sample(self, n=1):
+    def sample(self, n: int = 1) -> ArrayLike:
         """
-        
+        Generates a random sample of n jump distance observations using the method of Monte-Carlo.
 
         Parameters
         ----------
-        n : TYPE, optional
-            DESCRIPTION. The default is 1.
+        n : int, optional
+            Sample size. The default is 1.
 
         Returns
         -------
-        None.
+        ArrayLike
+            Generated jump distance observations.
 
         """
         u = np.random.uniform(low=0.0, high=1.0, size=n)

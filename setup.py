@@ -5,12 +5,20 @@ Created on Mon Apr  5 18:20:11 2021
 
 @author: malkusch
 """
+import pathlib
 from setuptools import setup, find_packages
 
-setup(name='ermine',
+
+HERE = pathlib.Path(__file__).parent
+# The text of the README file
+README = (HERE / "README.md").read_text()
+
+setup(name='pyErmine',
       python_requires='>=3.5',
-      version='0.1.1',
+      version='0.1.2',
       description='Estimate Reaction-rates by Markov-based Investigation of Nanoscopy Experiments (ermine) using Python.',
+      long_description=README,
+      long_description_content_type="text/markdown",
       url='https://github.com/SMLMS/pyErmine',
       author='Sebastian Malkusch',
       author_email='malkusch@med.uni-frankfurt.de',
@@ -21,7 +29,7 @@ setup(name='ermine',
                         'numpy>=1.19.2',
                         'pandas>=1.1.5',
                         'scikit-learn>=0.23.2'],
-      keywords=['hidden markov models', 'unsupervised learning', 'single particle diffucion', "biophysics"],
+      keywords=['hidden markov model', 'unsupervised learning', 'single particle tracking', 'biophysics'],
       classifiers= [
             "Intended Audience :: Science/Research",
             "Programming Language :: Python :: 3",

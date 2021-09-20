@@ -7,10 +7,73 @@ Created on Mon Apr  5 18:03:02 2021
 """
 import numpy as np
 from .JumpDistanceModel import JumpDistanceModel
+from numpy.typing import ArrayLike
 
 class JumpDistanceMixtureModel:
-    "Model mixture of multiple univariate Jump-Distance (judi) distributions and their EM estimation"
-    def __init__ (self, n_components = 2, degrees_of_freedom = 4, tau=0.02, init_params = "wm", params="wm"):
+    """ Model mixture of multiple univariate Jump-Distance (judi) distributions and their EM estimation
+    
+    Attributes
+    ----------
+    _n_components: int
+        Number of mobility modes.
+    _degrees_of_freedom: int
+        Degrees of freedom for translational movement.
+    _tau: float
+        Time interval between two consecutive measurements.
+    _mu: ArrayLike
+        Expected mean squared displacement.
+    _weights: ArrayLike
+        Population weights of the mobility modes.
+    _logLikelihood: float
+        Log likelihood of the model.
+    _init_params: str
+        Initialization parameter argument:
+        "m" initialize with radnom values of mu.
+        "w" initialize with equal weighted mobility modes.
+    _params: str
+        Optimization parameter argument:
+        "m" optimize values of mu.
+        "w" optimize weights mobility modes.
+    
+    Methods
+    ----------
+    diffusion_coefficients()
+        Calculates the diffusion coefficients that are associated to the respective mean squared displacements.
+    fit(x, n_iter, tolerance)
+        Parameterization of the model based on the sample of observed jump distances.
+    predict(x)
+        Predicts the mobility states of the jump distances using Bayesian decision theory.
+    fit_predict(x, n_iter, tolerance)
+        Parameterization of the model based on the sample of observed jump distances.
+        Then, the mobility states of the jump distances are predicted using Bayesian decision theory.
+    evaluate(x)
+        Evaluate the the model quaity for a given sample of observed jump distances.
+    sample(n)
+        Generates a random sample of n jump distance observations using the method of Monte-Carlo.
+    
+    """
+    def __init__ (self, n_components: int = 2, degrees_of_freedom: int = 4, tau: float = 0.02, init_params: str = "wm", params:str = "wm"):
+        """
+        Constructor of the JumpDistanceMixtureModel class.
+
+        Parameters
+        ----------
+        n_components : int, optional
+            Number of mobility modes. The default is 2.
+        degrees_of_freedom : int, optional
+            Degrees of freedom for translational movement. The default is 4.
+        tau : float, optional
+            Time interval between two consecutive measurements. The default is 0.02.
+        init_params : str, optional
+            Parameter argument for initialization step. The default is "wm".
+        params : str, optional
+            Parameter argument for optimization steps. The default is "wm".
+
+        Returns
+        -------
+        None.
+
+        """
         self._n_components = n_components
         self._degrees_of_freedom = degrees_of_freedom
         self._tau = tau
@@ -20,22 +83,74 @@ class JumpDistanceMixtureModel:
         self._init_params = str(init_params)
         self._params = str(params)
         
-    def diffusion_coefficients(self):
+    def diffusion_coefficients(self) -> ArrayLike:
+        """
+        Calculates the diffusion coefficients that are associated to the respective mean squared displacements.
+
+        Returns
+        -------
+        ArrayLike
+            Array of diffusion coefficients.
+
+        """
         diff_coeff = self._mu/(self._degrees_of_freedom * self._tau)
         return(np.expand_dims(diff_coeff, axis=1))
         
-    def pdf(self, x, mu):
-        "Probability of a data point given the current parameters"
+    def pdf(self, x: ArrayLike, mu: float) -> ArrayLike:
+        """
+        Probability of observing a given jump distance by a model
+        characterized by the expected mean squared displacement mu.
+
+        Parameters
+        ----------
+        x : ArrayLike
+            Sample of observed jump distances.
+        mu : float
+            Expected mean squared displacement.
+
+        Returns
+        -------
+        ArrayLike
+            Observation probability.
+
+        """
         p = ((2 * x)/mu) * np.exp((-np.square(x))/mu)
         return p
 
-    def pdf_super_pos(self, x):
+    def pdf_super_pos(self, x: ArrayLike) -> ArrayLike:
+        """
+        Probability of observiang a given jump distance.
+
+        Parameters
+        ----------
+        x : ArrayLike
+            Sample of observed jump distances.
+
+        Returns
+        -------
+        ArrayLike
+            Observation probability.
+
+        """
         probability = np.zeros([np.shape(x)])
         for i in range(self._n_components):
             probability[:] += self._weights[i] * self.pdf(x, mu = self._mu[i])
         return(probability)
         
-    def _init_step(self, x):
+    def _init_step(self, x: ArrayLike):
+        """
+        Initialization step used by the the fit method.
+
+        Parameters
+        ----------
+        x : ArrayLike
+            Sample of observed jump distances.
+
+        Returns
+        -------
+        None.
+
+        """
         mu_min = min(x)
         mu_max = max(x)
         if 'm' in self._init_params:
@@ -44,7 +159,20 @@ class JumpDistanceMixtureModel:
         if 'w' in self._init_params:
             self._weights = np.repeat(1/self._n_components, self._n_components)
     
-    def _e_step(self, x):
+    def _e_step(self, x: ArrayLike):
+        """
+        Perform the E-step of EM algorithm.
+
+        Parameters
+        ----------
+        x : ArrayLike
+            Sample of observed jump distances.
+
+        Returns
+        -------
+        None.
+
+        """
         probability = np.zeros([np.shape(x)[0], self._n_components])
         for i in range(self._n_components):
             probability[:,i] = self.pdf(x, self._mu[i]) * self._weights[i]
@@ -54,7 +182,20 @@ class JumpDistanceMixtureModel:
             self._normalized_probability_[:,i] = probability[:,i] / denominator[:]
         self._logLikelihood = np.sum(np.log(denominator))
 
-    def _m_step(self, x):
+    def _m_step(self, x: ArrayLike):
+        """
+        Perform the M-step of EM algorithm.
+
+        Parameters
+        ----------
+        x : ArrayLike
+            Sample of observed jump distances.
+
+        Returns
+        -------
+        None.
+
+        """
         for i in range(self._n_components):
             denominator = np.sum(self._normalized_probability_[:,i])
             if 'm' in self._params:
@@ -63,7 +204,30 @@ class JumpDistanceMixtureModel:
                 self._weights[i] = denominator / np.shape(x)[0]
                 self._weights = self._weights[:] /np.sum(self._weights)
         
-    def fit(self, x, n_iter = 1000, tolerance =  1e-9):
+    def fit(self, x: ArrayLike, n_iter: int = 1000, tolerance: float =  1e-9):
+        """
+        Parameterization of the model based on the sample of observed jump distances.
+        An initialization step is performed before entering the EM algorithm.
+        If you want to avoid this step for a subset of the parameters,
+        pass proper init_params keyword argument to JumpDistanceMixtureModel's constructor.
+        By default, the mu and weights parameters are optimized.
+        If you want to keep a specific model parameter fix,
+        pass proper params keyword argument to JumpDistanceMixtureModel's constructor.
+
+        Parameters
+        ----------
+        x : ArrayLike
+            Sample of observed jump distances.
+        n_iter : int, optional
+            Maximum number of iterations. The default is 1000.
+        tolerance : float, optional
+            Termination criterion. The default is 1e-9.
+
+        Returns
+        -------
+        None.
+
+        """
         self._init_step(x)
         self._e_step(x)
         for i in range(n_iter):
@@ -72,7 +236,21 @@ class JumpDistanceMixtureModel:
             self._e_step(x)
             if np.abs(self._logLikelihood - ll_preceding) < tolerance: break
         
-    def predict(self, x):
+    def predict(self, x: ArrayLike) -> ArrayLike:
+        """
+        Predicts the mobility states of the jump distances using Bayesian decision theory.
+
+        Parameters
+        ----------
+        x : ArrayLike
+            Sample of observed jump distances.
+
+        Returns
+        -------
+        ArrayLike
+            Predicted mobility states for the observed jump distances.
+
+        """
         p_bayes = np.zeros([np.shape(x)[0], self._n_components])
         denominator = 0
         for j in range(self._n_components):
@@ -82,12 +260,50 @@ class JumpDistanceMixtureModel:
         y = np.argmax(p_bayes, axis=1)
         return(y)
     
-    def fit_predict(self, x, n_iter = 1000, tolerance =  1e-9):
+    def fit_predict(self, x: ArrayLike, n_iter: int = 1000, tolerance: float = 1e-9) -> ArrayLike:
+        """
+        Parameterization of the model based on the sample of observed jump distances.
+        Then, the mobility states of the jump distances are predicted using Bayesian decision theory.
+        An initialization step is performed before entering the EM algorithm.
+        If you want to avoid this step for a subset of the parameters,
+        pass proper init_params keyword argument to JumpDistanceMixtureModel's constructor.
+        If you want to keep a specific model parameter fix,
+        pass proper params keyword argument to JumpDistanceMixtureModel's constructor.
+
+        Parameters
+        ----------
+        x : ArrayLike
+            Sample of observed jump distances.
+        n_iter : int, optional
+            Maximum number of iterations. The default is 1000.
+        tolerance : float, optional
+            Termination criterion. The default is 1e-9.
+
+        Returns
+        -------
+        ArrayLike
+            Predicted mobility states for the observed jump distances.
+
+        """
         self.fit(x, n_iter = 1000, tolerance =  1e-9)
         y = self.predict(x)
         return(y)
     
-    def evaluate(self, x):
+    def evaluate(self, x: ArrayLike) -> dict:
+        """
+        Evaluate the the model quaity for a given sample of observed jump distances.
+
+        Parameters
+        ----------
+        x : ArrayLike
+            Sample of observed jump distances.
+
+        Returns
+        -------
+        dict
+            Evaluation metrics of observation.
+
+        """
         self._e_step(x)
         dof = self._n_components + self._n_components - 1
         instances = np.shape(x)[0]
@@ -103,7 +319,22 @@ class JumpDistanceMixtureModel:
                       "AICc": [aicc]}
         return(dictionary)
     
-    def sample(self, n):
+    def sample(self, n: int=1) -> (ArrayLike, ArrayLike):
+        """
+        Generates a random sample of n jump distance observations using the method of Monte-Carlo.
+
+        Parameters
+        ----------
+        n : int, optional
+            Sample size. The default is 1.
+
+        Returns
+        -------
+        (ArrayLike, ArrayLike)
+            Generated jump distance observations.
+            State sequence.
+
+        """
         judi = JumpDistanceModel(diffusion_coefficient = self.diffusion_coefficients()[0],
                                  degrees_of_freedom = self._degrees_of_freedom,
                                  tau = self._tau)
