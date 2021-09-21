@@ -11,7 +11,7 @@ Created on Mon Apr 19 08:07:25 2021
 import numpy as np
 
 
-def calculate_expectation_value(diff_coeff: float, tau: float = 0.02, sigma: float = 0.02, epsilon: float = 10.0) -> float:
+def calculate_expectation_value(diff_coeff: float, tau: float = 0.02, dof: int=4,  sigma: float = 0.02, epsilon: float = 10.0) -> float:
     """
     Calculates the expected mean squared displacement based upon the
     diffusion coefficient and the static and dynamic measurement errors.
@@ -26,6 +26,8 @@ def calculate_expectation_value(diff_coeff: float, tau: float = 0.02, sigma: flo
         corrected diffusion coefficnet.
     tau : float, optional
         Time difference between measurements. The default is 0.02.
+    dof : int, optinal
+        Degrees of freedom for translational mobility. The default is 4.
     sigma : float, optional
         Integration time of a measurement. The default is 0.02.
     epsilon : float, optional
@@ -37,11 +39,11 @@ def calculate_expectation_value(diff_coeff: float, tau: float = 0.02, sigma: flo
         Expected mean squared displacement.
 
     """
-    msd = 4*diff_coeff * (tau - (sigma/3.0)) + 4 * np.square(epsilon)
+    msd = dof*diff_coeff * (tau - (sigma/3.0)) + dof * np.square(epsilon)
     return msd
 
 
-def calculate_diffusion_coefficient(expected_value: float, tau: float = 0.02, sigma: float = 0.02, epsilon: float = 10.0) -> float:
+def calculate_diffusion_coefficient(expected_value: float, tau: float = 0.02, dof: int = 4, sigma: float = 0.02, epsilon: float = 10.0) -> float:
     """
     Calculates the expected diffusion coefficient
     corrected for static and dynamic errors.
@@ -56,6 +58,8 @@ def calculate_diffusion_coefficient(expected_value: float, tau: float = 0.02, si
         Measured mean squared displacement
     tau : float, optional
         Time difference between measurements. The default is 0.02.
+    dof : int, optinal
+        Degrees of freedom for translational mobility. The default is 4.
     sigma : float, optional
         Integration time of a measurement. The default is 0.02.
     epsilon : float, optional
@@ -67,7 +71,7 @@ def calculate_diffusion_coefficient(expected_value: float, tau: float = 0.02, si
         Corrected diffusion coefficnet.
 
     """
-    diff_coeff = (expected_value - 4.0 * np.square(epsilon)) / (4.0 * tau - (4.0/3.0) * sigma) 
+    diff_coeff = (expected_value - float(dof) * np.square(epsilon)) / (float(dof) * tau - (dof/3.0) * sigma) 
     return diff_coeff
 
 def static_error(apparent_msd_d0: float) -> float:
