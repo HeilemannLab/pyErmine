@@ -86,6 +86,36 @@ class JumpDistanceMixtureModel:
         self._params = str(params)
         
     @property
+    def n_components(self) -> int:
+        """
+        Returns the instance variable _n_components
+
+        Returns
+        -------
+        int
+            Number of mobility modes in the model.
+
+        """
+        return(self._n_components)
+    
+    @n_components.setter
+    def n_components(self, value: int):
+        """
+        Sets the instance variable _n_components
+
+        Parameters
+        ----------
+        value : int
+            Number of mobility modes in the model.
+
+        Returns
+        -------
+        None.
+
+        """
+        
+        
+    @property
     def degrees_of_freedom (self) -> int:
         """
         Returns the instance variable _degrees_of_freedom.
