@@ -3,36 +3,38 @@
 """
 Created on Thu Apr 22 16:36:21 2021
 
-@author: malkusch
+@project: pyErmine
+@author: Sebastian Malkusch
+@email: malkusch@med.uni-frankfurt.de
 """
 
 from scipy import stats
 stats.chisqprob = lambda chisq, df: stats.chi2.sf(chisq, df)
 
-def likelihood_ratio_test(ll_min, ll_max, dof_min, dof_max):
+def likelihood_ratio_test(ll_min: float, ll_max: float, dof_min: int, dof_max: int) -> (float, float):
     """
+    Assesses the goodness of fit of two competing statistical models based on the ratio of their likelihoods.
     
 
     Parameters
     ----------
-    ll_min : TYPE
-        DESCRIPTION.
-    ll_max : TYPE
-        DESCRIPTION.
-    dof_min : TYPE
-        DESCRIPTION.
-    dof_max : TYPE
-        DESCRIPTION.
+    ll_min : float
+        Likelihood of the less complex model.
+    ll_max : float
+        Likelihood of the more complex model.
+    dof_min : int
+        Degrees of freedom of the less complex model.
+    dof_max : int
+        Degrees of freedom of the more complex model.
 
     Returns
     -------
-    lr : TYPE
-        DESCRIPTION.
-    p : TYPE
-        DESCRIPTION.
+    (float, float)
+        lr: Likelihood ratio.
+        p: p Value.
 
     """
     lr = 2 * (ll_max - ll_min)
     delta_dof = dof_max - dof_min
     p = stats.chisqprob(lr,delta_dof)
-    return lr, p
+    return (lr, p)

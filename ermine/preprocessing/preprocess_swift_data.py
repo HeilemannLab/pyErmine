@@ -3,13 +3,16 @@
 """
 Created on Mon Apr  5 17:50:44 2021
 
-@author: malkusch
+@project: pyErmine
+@author: Sebastian Malkusch
+@email: malkusch@med.uni-frankfurt.de
 """
 import numpy as np
 import pandas as pd
 
-def preprocess_swift_data(data_df, min_track_length = 4):
-    """ Creates a data frame of single molecule jumps
+def preprocess_swift_data(data_df: pd.DataFrame, min_track_length: int = 4) -> pd.DataFrame:
+    """
+    Creates a data frame of single molecule jumps
     
     The passed in data frame `data_df` is a swift data frame. Here, each line
     represents a single molecule location at a distinct time point.
@@ -27,20 +30,19 @@ def preprocess_swift_data(data_df, min_track_length = 4):
         `frame`
         `x [nm]`
         `y [nm]`
-        
     
 
     Parameters
     ----------
-    data_df : pandas.core.frame.DataFrame
+    data_df : pd.DataFrame
         A single molecule location data frame created by Swift.
     min_track_length : int, optional
         minimal track length. The default is 4.
 
     Returns
     -------
-    jump_df: pandas.core.frame.DataFrame
-        A single molecule jump data frame.
+    pd.DataFrame
+        jump_df:  A single molecule jump data frame.
 
     """
     filtered_df = data_df[data_df["track.lifetime"] >= min_track_length].copy()

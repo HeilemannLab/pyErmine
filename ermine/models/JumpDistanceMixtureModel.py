@@ -3,7 +3,9 @@
 """
 Created on Mon Apr  5 18:03:02 2021
 
-@author: malkusch
+@project: pyErmine
+@author: Sebastian Malkusch
+@email: malkusch@med.uni-frankfurt.de
 """
 import numpy as np
 from .JumpDistanceModel import JumpDistanceModel
@@ -82,6 +84,209 @@ class JumpDistanceMixtureModel:
         self._logLikelihood = 0
         self._init_params = str(init_params)
         self._params = str(params)
+        
+    @property
+    def degrees_of_freedom (self) -> int:
+        """
+        Returns the instance variable _degrees_of_freedom.
+
+        Returns
+        -------
+        int
+            Translational degrees of freedom.
+
+        """
+        return (self._degrees_of_freedom)
+
+    @degrees_of_freedom.setter
+    def degrees_of_freedom_ (self, value: int):
+        """
+        Sets the instance variable _degrees_of_freedom.
+
+        Parameters
+        ----------
+        value : int
+            Degrees of freedom for translational movement.
+
+        Returns
+        -------
+        None.
+
+        """
+        self._degrees_of_freedom = float(value)
+        
+    @property
+    def tau(self) -> float:
+        """
+        Returns the instance variable _tau.
+
+        Returns
+        -------
+        float
+            The time interval between two consecutive measurements.
+
+        """
+        return (self._tau)
+
+    @tau.setter
+    def tau(self, value: float):
+        """
+        Sets the instance parameter _tau.
+
+        Parameters
+        ----------
+        value : float
+            The time interval between two consecutive measurements.
+
+        Returns
+        -------
+        None.
+
+        """
+        self._tau = float(value)
+        
+    @property
+    def mu(self) -> ArrayLike:
+        """
+        Returns the instance variable _mu.
+
+        Returns
+        -------
+        ArrayLike
+            Expected mean squared displacements of the model.
+
+        """
+        return(self._mu)
+    
+    @mu.setter
+    def mu(self, value: ArrayLike):
+        """
+        Sets the instance variable _mu.
+
+        Parameters
+        ----------
+        value : ArrayLike
+            Expected mean squared displacements of the model.
+
+        Returns
+        -------
+        None.
+
+        """
+        self._mu = value
+        
+    @property
+    def weights(self) -> ArrayLike:
+        """
+        Returns the instance variable _weights.
+
+        Returns
+        -------
+        ArrayLike
+            Weights of the model modes.
+
+        """
+        return(self._weights)
+    
+    @weights.setter
+    def weights(self, value: ArrayLike):
+        """
+        Sets the instance variable _weights.
+
+        Parameters
+        ----------
+        value : ArrayLike
+            Weights of the model modes.
+
+        Returns
+        -------
+        None.
+
+        """
+        self._weights = value
+        
+    @property
+    def init_params(self) -> str:
+        """
+        Returns the instance variable _init_params.
+
+        Returns
+        -------
+        str
+            Initialization parameter argument:
+            "m" initialize with radnom values of mu.
+            "w" initialize with equal weighted mobility modes.
+
+        """
+        return(self._init_params)
+    
+    @init_params.setter
+    def init_params(self, value: str):
+        """
+        Sets the instance variable _init_params.
+
+        Parameters
+        ----------
+        value : str
+            Initialization parameter argument:
+            "m" initialize with radnom values of mu.
+            "w" initialize with equal weighted mobility modes.
+
+        Returns
+        -------
+        None.
+
+        """
+        self._init_params = str(value)
+        
+    @property
+    def params(self) -> str:
+        """
+        Returns the instance variable _params.
+
+        Returns
+        -------
+        str
+           Optimization parameter argument:
+           "m" optimize values of mu.
+           "w" optimize weights mobility modes.
+
+        """
+        return(self._params)
+    
+    @params.setter
+    def params(self, value: str):
+        """
+        Sets the instance variable _params.
+
+        Parameters
+        ----------
+        value : str
+            Optimization parameter argument:
+            "m" optimize values of mu.
+            "w" optimize weights mobility modes.
+
+        Returns
+        -------
+        None.
+
+        """
+        self._params = str(value)
+        
+    @property
+    def logLikelihood(self) -> float:
+        """
+        Returns the instance variable _logLikelihood.
+
+        Returns
+        -------
+        float
+            The log likelihood of the model.
+
+        """
+        return(self._logLikelihood)
+
+        
         
     def diffusion_coefficients(self) -> ArrayLike:
         """

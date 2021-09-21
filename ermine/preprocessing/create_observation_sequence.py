@@ -3,23 +3,28 @@
 """
 Created on Fri Apr 16 08:25:26 2021
 
-@author: malkusch
+@project: pyErmine
+@author: Sebastian Malkusch
+@email: malkusch@med.uni-frankfurt.de
 """
 import numpy as np
 import pandas as pd
+from numpy.typing import ArrayLike
 
-def create_observation_sequence(judi_df):
+def create_observation_sequence(judi_df: pd.DataFrame) -> (ArrayLike, ArrayLike):
     """
-    
+    Creates an observation sequence of single particle tracking trajectories for the analysis with ErmineHMM.
 
     Parameters
     ----------
-    judi_df : TYPE
-        DESCRIPTION.
+    judi_df : pd.DataFrame
+        Pandas DataFrame object that comprises information on "jump_distance" and "track.id_departure".
 
     Returns
     -------
-    None.
+    (ArrayLike, ArrayLike)
+        x: Jump distance observation sequence.
+        lengths: Lengths of the individual sequences in x.
 
     """
     unique_track_id_vec = np.unique(judi_df["track.id_departure"].values)

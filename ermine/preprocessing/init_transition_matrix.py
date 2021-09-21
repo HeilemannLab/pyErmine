@@ -3,13 +3,17 @@
 """
 Created on Fri Apr 16 11:48:28 2021
 
-@author: malkusch
+@project: pyErmine
+@author: Sebastian Malkusch
+@email: malkusch@med.uni-frankfurt.de
 """
 import numpy as np
+from numpy.typing import ArrayLike
 type(np.zeros([2,2]))
 
-def init_transition_matrix(n_components = 2, stability = 0.9):
-    """Initializes a transition matrix for ermine
+def init_transition_matrix(n_components: int = 2, stability: float = 0.9) -> ArrayLike:
+    """
+    Initializes a transition matrix for ermine
 
     Based on the given parameters `n_components` and `stability` an initial
     guess for a transition matrix is calculated.
@@ -20,13 +24,12 @@ def init_transition_matrix(n_components = 2, stability = 0.9):
     n_components : int, optional
         Number of model states. The default is 2.
     stability : float, optional
-        Decay probability of a state. Must be less than or equal to 1.
-        The default is 0.9.
+        Decay probability of a state. Must be less than or equal to 1. The default is 0.9.
 
     Returns
     -------
-    trans_mat: numpy.ndarray
-        A n x n trnasition matrix.
+    ArrayLike
+        trans-mat: A n x n trnasition matrix.
 
     """
     if stability > 1:

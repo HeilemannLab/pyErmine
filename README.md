@@ -2,12 +2,12 @@
 Estimate Reaction-rates by Markov-based Investigation of Nanoscopy Experiments (ermine) using Python.
 
 ## Author
-Sebastian Malkusch
+Sebastian Malkusch  
 
-Data Science | Clinical Pharmacology
-Institute for clinical pharmacology
-Goethe-University-Hospital
-Frankfurt am Main
+Data Science | Clinical Pharmacology  
+Institute for clinical pharmacology  
+Goethe-University-Hospital  
+Frankfurt am Main  
 Germany
 
 ## Abstarct

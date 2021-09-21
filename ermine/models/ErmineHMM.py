@@ -1,4 +1,12 @@
-# from hmmlearn import hmm
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr 19 08:07:25 2021
+
+@project: pyErmine
+@author: Sebastian Malkusch
+@email: malkusch@med.uni-frankfurt.de
+"""
 from hmmlearn.base import _BaseHMM
 
 import numpy as np
@@ -8,7 +16,50 @@ from numpy.typing import ArrayLike
 
 class ErmineHMM(_BaseHMM):
     """
-        Hidden Markov model with jump distance model emissions.
+    Hidden Markov model with jump distance model emissions.
+        
+    Attributes
+    ----------
+    _n_components_ : int, optional
+        Number of states. The default is 1.
+    _startprob_prior_ : float, optional
+        Parameters of the Dirichlet prior distribution for startprob_. The default is 1.0.
+    _transmat_prior_ : float, optional
+        Parameters of the Dirichlet prior distribution for each row of the transition probabilities transmat_. The default is 1.0.
+    _diffusion_degrees_of_freedom_ : int, optional
+        Translational degrees of freedom. The default is 4.
+    _tau_ : float, optional
+        Time interval between two consecutive measurements. The default is 0.02.
+    _algorithm_ : str, optional
+        Decoder algorithm. The default is "viterbi".
+    _random_state_ : int, optional
+        A random number generator instance. The default is 42.
+    _n_iter_ : int, optional
+        Maximum number of iterations to perform. The default is 10.
+    _tol_ : float, optional
+        Convergence threshold. EM will stop if the gain in log-likelihood is below this value. The default is 1e-2.
+    _verbose_ : bool, optional
+        Whether per-iteration convergence reports are printed to sys.stderr. Convergence can also be diagnosed using the monitor_ attribute. The default is False.
+    _params_ : str, optional
+        The parameters that get updated during training.
+        Can contain any combination of ‘s’ for startprob, ‘t’ for transmat, ‘d’ for diffusion coefficients. Defaults to all parameters. The default is "std".
+    _init_params_ : str, optional
+        The parameters that get initialized prior to training.
+        Can contain any combination of ‘s’ for startprob, ‘t’ for transmat, ‘d’ for diffusion coefficients. Defaults to all parameters. The default is "std".
+    _diffusion_coefficients_: ArrayLike
+        Diffusion coefficients of mobility modes.
+    _mu_: ArrayLike
+        Expected mean squared displacements of of mobilty modes.
+        
+    Methods
+    ----------
+    fit(self, X: ArrayLike, lengths: ArrayLike)   :
+        Parameterization of the model based on the given jump distance sequence.
+    evaluate(self, X: ArrayLike, lengths: ArrayLike = None):
+        Evaluate the the model quality for a given sample of observed jump distances.
+    predict(X, lengths=None):
+        Find most likely state sequence corresponding to X.
+    
     """
     
 
@@ -129,7 +180,6 @@ class ErmineHMM(_BaseHMM):
         None.
 
         """
-        """Sets instance variable tau."""
         self._diffusion_degrees_of_freedom_ = float(value)
 
 # =============================================================================
@@ -532,7 +582,7 @@ class ErmineHMM(_BaseHMM):
     
     def evaluate(self, X: ArrayLike, lengths: ArrayLike = None) -> dict:
         """
-        Evaluate the the model quaity for a given sample of observed jump distances.
+        Evaluate the the model quality for a given sample of observed jump distances.
 
         Parameters
         ----------

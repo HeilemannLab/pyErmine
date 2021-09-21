@@ -3,7 +3,9 @@
 """
 Created on Mon Apr  5 18:00:53 2021
 
-@author: malkusch
+@project: pyErmine
+@author: Sebastian Malkusch
+@email: malkusch@med.uni-frankfurt.de
 """
 import numpy as np
 from numpy.typing import ArrayLike
@@ -60,7 +62,110 @@ class JumpDistanceModel:
         self._diffusion_coefficient = diffusion_coefficient
         self._degrees_of_freedom = degrees_of_freedom
         self._tau = tau
-        self._mu = self._degrees_of_freedom * self._diffusion_coefficient * self._tau 
+        self._mu = self._degrees_of_freedom * self._diffusion_coefficient * self._tau
+        
+    @property
+    def diffusion_coefficient(self) -> float:
+        """
+        Returns the instance variable _diffusion_coefficient.
+
+        Returns
+        -------
+        float
+            The diffusion coefficient of the model.
+
+        """
+        return (self._diffusion_coefficient)
+
+    @diffusion_coefficient.setter
+    def diffusion_coefficient(self, value: float):
+        """
+        Sets the instance parameter _diffusion_coefficient.
+
+        Parameters
+        ----------
+        value : float
+            The diffusion coefficient of the model.
+
+        Returns
+        -------
+        None.
+
+        """
+        self._diffusion_coefficient = float(value)
+        
+    @property
+    def degrees_of_freedom (self) -> int:
+        """
+        Returns the instance variable _degrees_of_freedom.
+
+        Returns
+        -------
+        int
+            Translational degrees of freedom.
+
+        """
+        return (self._degrees_of_freedom)
+
+    @degrees_of_freedom.setter
+    def degrees_of_freedom_ (self, value: int):
+        """
+        Sets the instance variable _degrees_of_freedom.
+
+        Parameters
+        ----------
+        value : int
+            Degrees of freedom for translational movement.
+
+        Returns
+        -------
+        None.
+
+        """
+        self._degrees_of_freedom = float(value)
+        
+    @property
+    def tau(self) -> float:
+        """
+        Returns the instance variable _tau.
+
+        Returns
+        -------
+        float
+            The time interval between two consecutive measurements.
+
+        """
+        return (self._tau)
+
+    @tau.setter
+    def tau(self, value: float):
+        """
+        Sets the instance parameter _tau.
+
+        Parameters
+        ----------
+        value : float
+            The time interval between two consecutive measurements.
+
+        Returns
+        -------
+        None.
+
+        """
+        self._tau = float(value)
+        
+    @property
+    def mu(self) -> float:
+        """
+        Returns the instance variable _mu.
+
+        Returns
+        -------
+        float
+            Expected mean squared displacement.
+
+        """
+        return(self._mu)
     
     def pdf(self, distance: ArrayLike) -> ArrayLike:
         """
