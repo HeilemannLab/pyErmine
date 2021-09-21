@@ -96,7 +96,7 @@ class JumpDistanceMixtureModel:
             Number of mobility modes in the model.
 
         """
-        return(self._n_components)
+        return(int(self._n_components))
     
     @n_components.setter
     def n_components(self, value: int):
@@ -113,6 +113,7 @@ class JumpDistanceMixtureModel:
         None.
 
         """
+        self._n_components = float(value)
         
         
     @property
@@ -126,7 +127,7 @@ class JumpDistanceMixtureModel:
             Translational degrees of freedom.
 
         """
-        return (self._degrees_of_freedom)
+        return (int(self._degrees_of_freedom))
 
     @degrees_of_freedom.setter
     def degrees_of_freedom_ (self, value: int):
