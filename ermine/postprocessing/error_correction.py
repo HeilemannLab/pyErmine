@@ -97,4 +97,5 @@ def static_error(apparent_msd_d0: ArrayLike, dof: int = 4) -> ArrayLike:
         Expected localization precsison..
 
     """
-    return(np.sqrt(apparent_msd_d0/float(dof)))
+    epsilon =  np.sqrt(apparent_msd_d0/float(dof))
+    return(epsilon)
