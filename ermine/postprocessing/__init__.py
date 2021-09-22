@@ -13,6 +13,7 @@ Module functions are:
 """
 from .error_correction import calculate_diffusion_coefficient
 from .error_correction import calculate_expectation_value
+from .error_correction import static_error
 
 __all__=["calculate_diffusion_coefficient",
          "calculate_expectation_value",
