@@ -65,7 +65,6 @@ class ErmineHMM(_BaseHMM):
 
     def __init__(self, n_components: int=1,
                  startprob_prior:float=1.0, transmat_prior:float=1.0,
-                 # diffusion_prior=0, diffusion_weight=0,
                  diffusion_degrees_of_freedom:int = 4,
                  tau:float = 0.02,
                  algorithm:str="viterbi", random_state:int=42,
@@ -114,8 +113,6 @@ class ErmineHMM(_BaseHMM):
                           tol=tol, params=params, verbose=verbose, init_params=init_params)
 
         self._tau_ = tau
-        # self.diffusion_prior_ = diffusion_prior
-        # self.diffusion_weight_ = diffusion_weight
         self._diffusion_degrees_of_freedom_ = diffusion_degrees_of_freedom
         self._diffusion_coefficients_ = np.zeros([self.n_components])
         self._mu_ = np.zeros([self.n_components])
@@ -182,59 +179,7 @@ class ErmineHMM(_BaseHMM):
         """
         self._diffusion_degrees_of_freedom_ = float(value)
 
-# =============================================================================
-#     @property
-#     def diffusion_prior_(self):
-#         """Return diffusion_coefficients."""
-#         return (self._diffusion_prior_)
-# 
-#     @diffusion_prior_.setter
-#     def diffusion_prior_(self, value: float):
-#         """
-#         Sets the instance variable_diffusion prior
-# 
-#         Parameters
-#         ----------
-#         value : float
-#             DESCRIPTION.
-# 
-#         Returns
-#         -------
-#         None.
-# 
-#         """
-#         self._diffusion_prior_ = np.float(value)
-# 
-#     @property
-#     def diffusion_weight_(self) -> float:
-#         """
-#         Returns the instance variable _diffusion_weight.
-# 
-#         Returns
-#         -------
-#         float
-#             diffusion_weight.
-# 
-#         """
-#         return (self._diffusion_weight_)
-# 
-#     @diffusion_weight_.setter
-#     def diffusion_weight_(self, value: float):
-#         """
-#         Sets the instance variable _diffusion_weight_.
-# 
-#         Parameters
-#         ----------
-#         value : float
-#             Diffusion weight.
-# 
-#         Returns
-#         -------
-#         None.
-# 
-#         """
-#         self._diffusion_weight_ = np.float(value)
-# =============================================================================
+
         
     @property
     def mu_(self) -> ArrayLike:
@@ -492,11 +437,6 @@ class ErmineHMM(_BaseHMM):
         """
         super().fit(X, lengths)
         self._update_diffusion_coefficients()
-
-    # def _check(self):
-    #     super()._check()
-    #     self.diffusion_coefficients_ = np.asarray(self.diffusion_coefficients_)
-    #     self.n_features = 1
     
     def _update_diffusion_coefficients(self):
         """

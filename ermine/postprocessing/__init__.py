@@ -15,4 +15,5 @@ from .error_correction import calculate_diffusion_coefficient
 from .error_correction import calculate_expectation_value
 
 __all__=["calculate_diffusion_coefficient",
-         "calculate_expectation_value"]
+         "calculate_expectation_value",
+         "static_error"]

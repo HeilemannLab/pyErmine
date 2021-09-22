@@ -9,9 +9,10 @@ Created on Mon Apr 19 08:07:25 2021
 """
 
 import numpy as np
+from numpy.typing import ArrayLike
 
 
-def calculate_expectation_value(diff_coeff: float, tau: float = 0.02, dof: int=4,  sigma: float = 0.02, epsilon: float = 10.0) -> float:
+def calculate_expectation_value(diff_coeff: ArrayLike, tau: float = 0.02, dof: int=4,  sigma: float = 0.02, epsilon: float = 10.0) -> ArrayLike:
     """
     Calculates the expected mean squared displacement based upon the
     diffusion coefficient and the static and dynamic measurement errors.
@@ -22,7 +23,7 @@ def calculate_expectation_value(diff_coeff: float, tau: float = 0.02, dof: int=4
 
     Parameters
     ----------
-    diff_coeff : float
+    diff_coeff : Arraylike
         corrected diffusion coefficnet.
     tau : float, optional
         Time difference between measurements. The default is 0.02.
@@ -35,7 +36,7 @@ def calculate_expectation_value(diff_coeff: float, tau: float = 0.02, dof: int=4
 
     Returns
     -------
-    msd : float
+    msd : ArrayLike
         Expected mean squared displacement.
 
     """
@@ -43,7 +44,7 @@ def calculate_expectation_value(diff_coeff: float, tau: float = 0.02, dof: int=4
     return msd
 
 
-def calculate_diffusion_coefficient(expected_value: float, tau: float = 0.02, dof: int = 4, sigma: float = 0.02, epsilon: float = 10.0) -> float:
+def calculate_diffusion_coefficient(expected_value: ArrayLike, tau: float = 0.02, dof: int = 4, sigma: float = 0.02, epsilon: float = 10.0) -> ArrayLike:
     """
     Calculates the expected diffusion coefficient
     corrected for static and dynamic errors.
@@ -54,7 +55,7 @@ def calculate_diffusion_coefficient(expected_value: float, tau: float = 0.02, do
 
     Parameters
     ----------
-    expected_value : float
+    expected_value : ArrayLike
         Measured mean squared displacement
     tau : float, optional
         Time difference between measurements. The default is 0.02.
@@ -67,14 +68,14 @@ def calculate_diffusion_coefficient(expected_value: float, tau: float = 0.02, do
 
     Returns
     -------
-    diff_coeff : float
+    diff_coeff : ArrayLike
         Corrected diffusion coefficnet.
 
     """
     diff_coeff = (expected_value - float(dof) * np.square(epsilon)) / (float(dof) * tau - (dof/3.0) * sigma) 
     return diff_coeff
 
-def static_error(apparent_msd_d0: float) -> float:
+def static_error(apparent_msd_d0: ArrayLike, dof: int = 4) -> ArrayLike:
     """
     Calculates the static error of localization of a fixed molecule
     from the apparent mean square displacement.
@@ -85,13 +86,15 @@ def static_error(apparent_msd_d0: float) -> float:
 
     Parameters
     ----------
-    apparent_msd_d0 : float
+    apparent_msd_d0 : ArrayLike
         Measured mean squared displacement of a fix molecule.
+    dof: int, optional
+        Degrees of freedom for translational mobility. The default is 4.
 
     Returns
     -------
-    epsilon: float
+    epsilon: ArrayLike
         Expected localization precsison..
 
     """
-    return(np.sqrt(apparent_msd_d0/4.0))
+    return(np.sqrt(apparent_msd_d0/float(dof)))
