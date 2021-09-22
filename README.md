@@ -19,6 +19,13 @@ The python package pyErmine analyzes the mobility of laterally diffusing molecul
 * pandas >= 1.1.5
 * scikit-learn >= 0.23.2
 
+## Installation
+ermine is hosted at https://pypi.org/project/pyErmine/0.1.2/  
+Install via pip:
+* update pip: pip install --upgrade pip
+* install ermine: pip install pyErmine
+
+
 ## Reference
 Publication in progress.
 
